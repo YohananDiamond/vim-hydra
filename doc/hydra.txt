@@ -1,0 +1,147 @@
+*hydra.txt*	Create and use hydras
+
+==============================================================================
+CONTENTS                                        *hydra*   *hydra-contents*
+
+    About.......................................: |hydra-about|
+    Installation................................: |hydra-installation|
+    Create......................................: |hydra-create|
+        show....................................: |hydra-show|
+        foreign_key.............................: |hydra-foreign_key|
+        exit_key................................: |hydra-exit_key|
+        keymap-hide.............................: |hydra-keymap-hide|
+        keymap-exit.............................: |hydra-keymap-eixt|
+    Usage.......................................: |hydra-usage|
+    Issues......................................: |hydra-issues|
+
+==============================================================================
+ABOUT                                                          *hydra-about*
+
+This plugin allows you to create hydras similar to abo-abo's Emacs plugin.
+
+==============================================================================
+INSTALLATION                                            *hydra-installation*
+
+Using vim-plug
+>
+    Plug 'brenopacheco/vim-hydra',
+<
+
+Or use your preferred plugin manager.
+
+==============================================================================
+CREATE                                                        *hydra-create*
+
+Create a dict with your hydra's configuration and call hydra#hydras#register(...).
+>
+    hydra#hydras#register(
+            \ {
+            \   'name': 'myhydra',
+            \   'title': 'My cool hydra',
+            \   'show': 'popup',
+            \   'exit_key': "\<Esc>",
+            \   'foreign_key': v:true,
+            \   'keymap': [
+            \     {
+            \       'name': 'Window',
+            \       'keys': [
+            \         ['v', 'vsplit', 'vertical split'],
+            \         ['s', 'vsplit', 'horizontal split']
+            \         ['d', 'close',  'close']
+            \       ]
+            \     },
+            \     {
+            \       'name': 'Buffer',
+            \       'keys': [
+            \         ['x', 'bd',      'delete'],
+            \         ['e', 'enew!',   'new',    'exit'],
+            \         ['n', 'bn',      'next',   'hide'],
+            \         ['p', 'bp',      'prev',   'hide'],
+            \       ]
+            \     }
+            \   ]
+            \ }
+    \ )
+<
+
+The name and title fields are required. 
+
+                                                           *hydra-show*
+
+The |show| option tells how the hydra is displayed. Currently, only 
+bottom split and popup are available. the popup (floating window) will
+only work with neovim.
+
+Default: 
+    "popup"
+
+                                                    *hydra-foreign_key*
+
+The |foreign_key| options tells whether the hydra remains open or 
+closes if the user presses some key he has not defined in the keymap. 
+If v:true, the hydra remains open.
+
+Default:
+    v:true
+
+                                                       *hydra-exit_key*
+
+The |exit_key| option tells which key to use for closing the hydra. 
+This key is set hidden in the keymap.
+
+Default:
+    "\<Esc>"
+
+                                                    *hydra-keymap-exit*
+
+Keys in the keymap defined with a "exit" value will exit the hydra
+after the command is run.
+
+                                                    *hydra-keymap-hide*
+
+Keys in the keymap defined with a "hide" value will not be displayed
+in the hydra.
+
+==============================================================================
+USAGE                                                          *hydra-usage*
+                                                                    *:Hydra*
+
+The plugin exposes the |:Hydra| command, which takes the hydra name as 
+argument and opens the hydra.
+
+>
+    :Hydra myhydra
+<
+
+==============================================================================
+OPTIONS                                                      *hydra-options*
+
+                                                          *g:hydra_defaults*
+
+Default values for generating hydras.
+
+>
+g:hydra_defaults = {
+            \ "show":        'popup',
+            \ "foreign_key": v:true,
+            \ "exit_key":    "q",
+            \ }
+<
+
+
+==============================================================================
+API                                                              *hydra-api*
+
+Register hydra. Takes hydra dict as argument.             *hydra#hydras#register()*
+Returns a list of registered hydras.                          *hydra#hydras#list()*
+Opens an hydra by name.                                       *hydra#hydras#open()*
+Get an hydra object (dict) by name.                            *hydra#hydras#get()*
+
+
+==============================================================================
+ISSUES                                                        *hydra-issues*
+
+Issues and PR's please send to:
+https://github.com/brenopacheco/hydra.vim/
+
+vim:tw=78:ts=8:ft=help:norl:
