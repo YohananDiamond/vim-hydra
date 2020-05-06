@@ -102,6 +102,7 @@ endfunction
 let g:hydra_defaults = {
             \ "show":        'popup',
             \ "foreign_key": v:true,
+            \ 'feed_key':    v:false,
             \ "exit_key":    "q",
             \ }
 
@@ -111,6 +112,7 @@ let s:Hydra = {
             \ 'show':        g:hydra_defaults.show,
             \ 'exit_key':    g:hydra_defaults.exit_key,
             \ 'foreign_key': g:hydra_defaults.foreign_key,
+            \ 'feed_key':    g:hydra_defaults.feed_key,
             \ 'keymap':      [],
             \ 'buffer':      v:false,
             \ 'focused':     v:false,
@@ -312,6 +314,9 @@ function! s:Hydra.parse(key) dict
     " echo "parsing key " a:key
     if self.keymap.hasKey(a:key)
         return self.keymap.keyCmd(a:key)
+    endif
+    if self.feed_key
+        exec "norm " . a:key
     endif
     throw "Foreign key"
 endfunction

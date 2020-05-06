@@ -29,6 +29,7 @@ Create a dict with your hydra's configuration and call hydra#hydras#register(...
             \   'show': 'popup',
             \   'exit_key': "\<Esc>",
             \   'foreign_key': v:true,
+            \   'feed_key':    v:true,
             \   'keymap': [
             \     {
             \       'name': 'Window',
@@ -78,6 +79,16 @@ This key is set hidden in the keymap.
 Default:
 "\<Esc>"
 
+### hydra-feed_key
+
+The feed_key option tells wether a key the user presses which he
+hasn't mapped should be processed by vim. i.e: if pressing \<C-f>
+should scroll down half a page or not if it is not mapped by the
+hydra.
+
+Default:
+v:false
+
 ### hydra-keymap-exit
 
 Keys in the keymap defined with a "exit" value will exit the hydra
@@ -105,6 +116,7 @@ Default values for generating hydras.
 g:hydra_defaults = {
             \ "show":        'popup',
             \ "foreign_key": v:true,
+            \ 'feed_key':    v:false,
             \ "exit_key":    "q",
             \ }
 ```
