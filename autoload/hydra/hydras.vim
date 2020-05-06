@@ -126,7 +126,7 @@ let s:Hydra = {
 function! s:Hydra.new(hydra) dict
     let l:newHydra = deepcopy(self)
     call extend(newHydra, a:hydra, "force")
-    if strlen(newHydra.title) == 0
+    if strwidth(newHydra.title) == 0
         let newHydra.title = newHydra.name 
     endif
     let newHydra.keymap = hydra#keymap#new(newHydra.keymap)
@@ -154,7 +154,7 @@ endfunction
  
 function! s:Hydra.makeDrawing() dict
 
-    let l:MaxStrlen = { list -> max(map(copy(list), 'strlen(v:val)')) }
+    let l:MaxStrlen = { list -> max(map(copy(list), 'strwidth(v:val)')) }
 
     let l:group_boxes = []
     let l:groups = self.keymap.getGroups()
@@ -170,7 +170,7 @@ function! s:Hydra.makeDrawing() dict
         let group_box[1] = " " . repeat("-", width -2) . " "
         let l:idx = 0
         for l:line in group_box
-            let group_box[idx] = line . repeat(" ", width - strlen(line))
+            let group_box[idx] = line . repeat(" ", width - strwidth(line))
             let idx = idx + 1
         endfor
         " echo "group box:\n"
@@ -181,12 +181,12 @@ function! s:Hydra.makeDrawing() dict
     let l:group_box = g:Reduce(group_boxes, g:Merge)
     " echo "\njoined:"
     " echo join(group_box, "\n")
-    let l:width = strlen(group_box[0])
+    let l:width = strwidth(group_box[0])
     let l:height = len(group_box)
     let l:laterals = map(range(height), '"┃"')
     let l:body = g:Merge(g:Merge(laterals, group_box), laterals)
     " echo join(body, "\n")
-    let l:header = "┏" . self.title . repeat("━", width - strlen(self.title)) . "┓" 
+    let l:header = "┏" . self.title . repeat("━", width - strwidth(self.title)) . "┓" 
     let l:footer = "┗" . repeat("━", width) . "┛"
 
     let l:drawing = []
@@ -354,6 +354,6 @@ let g:Merge = { list1, list2 ->
         \ map(
             \ range(
                 \ max( [ len(list1), len(list2) ])),
-            \ '(v:key >= len(list1) ? repeat(" ", strlen(list1[0])) : list1[v:key]) 
-            \ . (v:key >= len(list2) ? repeat(" ", strlen(list2[0])) : list2[v:key]) ')
+            \ '(v:key >= len(list1) ? repeat(" ", strwidth(list1[0])) : list1[v:key]) 
+            \ . (v:key >= len(list2) ? repeat(" ", strwidth(list2[0])) : list2[v:key]) ')
     \ }
