@@ -288,6 +288,8 @@ function! s:Hydra.loop() dict
             let l:cmd = self.parse(key)
             " echo "! " . key " -> " cmd
             execute cmd
+            " reset focused window
+            let self.focused = win_getid()
             if self.keymap.keyExit(key)
                 throw "Exit"    
             endif
