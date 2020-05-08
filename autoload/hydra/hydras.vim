@@ -15,7 +15,7 @@
 " API: registering, getting and opening hydras
 "--------------------------------------------------------------
 
-let s:this = { 'registered': {}, 'active': "", 'previous': "" }
+let s:this = { 'registered': {}, 'active': "", 'last': "" }
 
 command! -nargs=1 Hydra call hydra#hydras#open(<q-args>)
 
@@ -37,6 +37,19 @@ function! hydra#hydras#register(hydra) abort
     endtry
 endfunction
 
+"-------------------------------
+" Get last active hydra
+"-------------------------------
+function! hydra#hydras#last() abort
+   return s:this.last
+endfunction
+
+"-------------------------------
+" Get current active hydra name
+"-------------------------------
+function! hydra#hydras#active() abort
+   return s:this.active
+endfunction
 
 "-------------------------------
 " Get hydra by name.
@@ -144,6 +157,8 @@ function! s:Hydra.exit() dict
     silent! exec 'close! ' . bufwinid(bufnr)
     silent! exec 'bw! ' . bufnr
     " echo "Leaving"
+    let s:this.active = ""
+    let s:this.last = self.name
 endfunction
 
 function! s:Hydra.draw() abort
@@ -245,6 +260,7 @@ endfunction
 " Get a new buffer for the hydra
 "-------------------------------
 function! s:Hydra.config() dict
+   let s:this.active = self.name
    let l:bufname =  "___" . self.name . "-hydra___"
    try
        silent exec 'bw! ' . bufnr(bufname)
@@ -290,11 +306,10 @@ function! s:Hydra.loop() dict
             let l:cmd = self.parse(key)
             " echo "! " . key " -> " cmd
             execute cmd
-            " reset focused window
-            let self.focused = win_getid()
             if self.keymap.keyExit(key)
                 throw "Exit"    
             endif
+            call self.update()
         endw
     catch /Foreign key/
         " echo "Unknown key. Foreign key enabled, looping again."
@@ -342,6 +357,23 @@ endfunction
 function! s:Hydra.width() dict
     return strwidth(self.drawing[0])
 endfunction
+
+
+"-------------------------------
+" Updates focus and reopens hydra
+" if it is not visible
+"-------------------------------
+function! s:Hydra.update()
+    let self.focused = win_getid()
+    if index(tabpagebuflist(), self.buffer) < 0 
+       call self.config()
+       call self.window()
+       call self.draw()
+    endif
+    call self.focus()
+endfunction
+
+
 
 "---------------------------------------------------------------------------------------------
 " Helper functions
