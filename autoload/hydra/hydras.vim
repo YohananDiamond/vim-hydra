@@ -225,7 +225,7 @@ function! s:Hydra.open() dict
    call self.window()
    call self.draw()
    call self.loop()
-   call self.exit()    
+   " call self.exit()    
 endfunction
 
 function s:Hydra.window() abort
@@ -288,52 +288,44 @@ function! s:Hydra.handle() dict
        call self.focus()
        redraw!
        if getchar(1)
-           " return nr2char(getchar())
            return self.getchar()
        endif
        sleep 50ms
     endw
 endfunction
 
+
 "-------------------------------
-" Keypress wait loop
+" Loop. wair for keypresses.
+" " TODO:  refactor this method
 "-------------------------------
 function! s:Hydra.loop() dict
     try
         while v:true
             let l:key = self.handle()
-            " echo "key: " key
-            let l:cmd = self.parse(key)
-            " echo "! " . key " -> " cmd
-            execute cmd
-            if self.keymap.keyExit(key)
-                throw "Exit"    
+            if self.keymap.hasKey(key)
+                let l:cmd = self.keymap.keyCmd(key)
+                if self.keymap.keyExit(key)
+                    call self.exit()
+                    execute cmd
+                    return
+                else
+                    execute cmd
+                    call self.update()
+                endif
+            else
+                if !self.foreign_key 
+                    throw "Invalid key."
+                endif
+                if self.feed_key
+                    exec "norm " . key
+                endif
             endif
-            call self.update()
-        endw
-    catch /Foreign key/
-        " echo "Unknown key. Foreign key enabled, looping again."
-        if self.foreign_key
-            " echo "Unknown key. Foreign key disabled, looping again."
-            call self.loop()
-        endif
+        endwhile
     catch /.*/
-        echo v:exception
+       call self.exit()
+       echo v:exception 
     endtry
-endfunction
-
-"-------------------------------
-" Parse key pressed
-"-------------------------------
-function! s:Hydra.parse(key) dict
-    " echo "parsing key " a:key
-    if self.keymap.hasKey(a:key)
-        return self.keymap.keyCmd(a:key)
-    endif
-    if self.feed_key
-        exec "norm " . a:key
-    endif
-    throw "Foreign key"
 endfunction
 
 "-------------------------------
