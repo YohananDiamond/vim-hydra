@@ -5,6 +5,8 @@
 
 " TODO: fix whats supposed to be util functions and public functions for hydra "
 " TODO: the API doesn't need this, or does it? "
+" TODO: make floating window on top of other floats
+" TODO: visual cmds and plug commands (-range) "
 
 " if exists('s:hydras_loaded') 
 "     finish
@@ -18,6 +20,7 @@
 let s:this = { 'registered': {}, 'active': "", 'last': "" }
 
 command! -nargs=1 Hydra call hydra#hydras#open(<q-args>)
+command! -range -nargs=1 VHydra call hydra#hydras#open(<q-args>, visualmode())
 
 "-------------------------------
 " Register hydra. 
@@ -33,7 +36,7 @@ function! hydra#hydras#register(hydra) abort
         call s:this.register(a:hydra)
         echo "Hydra " a:hydra.name " registered successfully."
     catch /.*/
-        echo v:exception
+        echo "Unable to register hydra: " . v:exception
     endtry
 endfunction
 
@@ -61,7 +64,9 @@ endfunction
 "-------------------------------
 " Open hydra by name
 "-------------------------------
-function! hydra#hydras#open(name) abort
+function! hydra#hydras#open(name, ...) abort
+    " TODO: accept a range and save it. "
+    " allow users to run commands on ranges
    call s:this.open(a:name) 
 endfunction
 
@@ -99,7 +104,7 @@ function! s:this.open(name) dict
        try
            call hydra.open()
        catch /.*/
-           echo v:exception
+           echo "Unable to open hydra: " . v:exception
        endtry
     else 
         echo "Undefined hydra."
@@ -154,9 +159,7 @@ endfunction
 "-------------------------------
 function! s:Hydra.exit() dict
     let l:bufnr = bufnr(self.buffer)
-    silent! exec 'close! ' . bufwinid(bufnr)
-    silent! exec 'bw! ' . bufnr
-    " echo "Leaving"
+    if bufexists(bufnr) | silent! exec 'bw! ' . bufnr | endif
     let s:this.active = ""
     let s:this.last = self.name
 endfunction
@@ -225,7 +228,6 @@ function! s:Hydra.open() dict
    call self.window()
    call self.draw()
    call self.loop()
-   " call self.exit()    
 endfunction
 
 function s:Hydra.window() abort
@@ -309,6 +311,12 @@ function! s:Hydra.loop() dict
                     call self.exit()
                     execute cmd
                     return
+                elseif self.keymap.keyIteractive(key)
+                    echo "iteractive"
+                    call self.exit()
+                    execute cmd
+                    call s:wrap(cmd)
+                    return
                 else
                     execute cmd
                     call self.update()
@@ -324,7 +332,7 @@ function! s:Hydra.loop() dict
         endwhile
     catch /.*/
        call self.exit()
-       echo v:exception 
+       echo "Error: " . v:exception 
     endtry
 endfunction
 
@@ -365,6 +373,9 @@ function! s:Hydra.update()
     call self.focus()
 endfunction
 
+function! s:wrap(cmd) abort
+    au WinClosed <buffer> call feedkeys("v:call hydra#hydras#open(hydra#hydras#last())\<cr>")
+endfunction
 
 
 "---------------------------------------------------------------------------------------------

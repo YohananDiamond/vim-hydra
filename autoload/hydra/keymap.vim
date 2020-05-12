@@ -10,8 +10,8 @@
 " keymap = [
 "   { 'name': "groupA", 
 "     'keys': [ 
-"        [ "a", "desc", exit_bool, hide_bool  ],  
-"        [ "b", "desc", exit_bool, hide_bool  ], 
+"        [ "a", "desc", exit_bool, hide_bool, iteractive_bool  ],  
+"        [ "b", "desc", exit_bool, hide_bool, iteractive_bool  ], 
 "        ... 
 "   }, 
 "   { 'name': "groupB" 
@@ -70,6 +70,10 @@ function! s:Keymap.keyExit(key) dict
     return self.keys[a:key].exit
 endfunction
 
+function! s:Keymap.keyIteractive(key) dict
+    return self.keys[a:key].iteractive
+endfunction
+
 function! s:Keymap.keyHide(key) dict
     return self.keys[a:key].hide    
 endfunction
@@ -94,6 +98,7 @@ function! s:Keymap.init(keymap) dict
                 let newKey.desc = keydef[2]
                 let newKey.exit = index(keydef, 'exit') < 0 ? v:false : v:true
                 let newKey.hide = index(keydef, 'hide') < 0 ? v:false : v:true
+                let newKey.iteractive = index(keydef, 'iteractive') < 0 ? v:false : v:true
                 call add(groupKeys, key)
                 let self.keys[key] = newKey
             catch /.*/
