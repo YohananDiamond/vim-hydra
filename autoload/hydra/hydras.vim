@@ -127,15 +127,10 @@ let s:Keymap = {
 " Opens the hydra
 "-------------------------------
 function! s:Hydra.build() dict
-   echo "conf. buffer"
    call s:config_buffer(self)
-   echo "making drawing"
    call s:make_drawing(self)
-   echo "making window"
    call s:make_window(self)
-   echo "drawing drawing"
    call s:draw_window(self)
-   echo "looping"
    call s:loop(self)
 endfunction
 
@@ -317,7 +312,7 @@ function! s:loop(hydra) abort
                     execute cmd
                     return
                 elseif a:hydra.keymap.keys[key].interactive
-                    echo "interactive"
+                    " echo "interactive"
                     call a:hydra.exit()
                     execute cmd
                     call s:wrap_interactive()
