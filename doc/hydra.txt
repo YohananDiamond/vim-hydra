@@ -9,9 +9,13 @@ CONTENTS                                        *hydra*   *hydra-contents*
         show....................................: |hydra-show|
         foreign_key.............................: |hydra-foreign_key|
         exit_key................................: |hydra-exit_key|
+        position................................: |hydra-position|
         keymap-hide.............................: |hydra-keymap-hide|
-        keymap-exit.............................: |hydra-keymap-eixt|
+        keymap-exit.............................: |hydra-keymap-exit|
+        keymap-interactive......................: |hydra-keymap-interactive|
     Usage.......................................: |hydra-usage|
+    Defaults....................................: |hydra-defaults|
+    API.........................................: |hydra-api|
     Issues......................................: |hydra-issues|
 
 ==============================================================================
@@ -102,6 +106,23 @@ hydra.
 Default:
     v:false
 
+                                                       *hydra-position*
+
+Reference to a function used to defined where the hydra window will
+be placed on screen. For now only the s:lower_center function is 
+provided. The user can define his own function. The function is expected
+to take height and width as argument and return a dict with 'pos' and
+'col' arguments. i.e:
+
+>
+    function top_center(height, width)
+        return { 'row': (&columns - height) / 2, 'col': 0 }
+    endfunction
+<
+
+Default:
+    's:lower_center'
+
                                                     *hydra-keymap-exit*
 
 Keys in the keymap defined with a "exit" value will exit the hydra
@@ -111,6 +132,13 @@ after the command is run.
 
 Keys in the keymap defined with a "hide" value will not be displayed
 in the hydra.
+
+                                              *hydra-keymap-interactive*
+
+Option used when the command opens up another window and the user wish
+to interact with this window until it is closed and go back to the hydra. 
+Attaches an autocmd for WinClosed on the newly opened window which reopnes
+the hydra. Useful for running FZF or opening up a temporary terminal window.
 
 ==============================================================================
 USAGE                                                          *hydra-usage*
@@ -124,7 +152,7 @@ argument and opens the hydra.
 <
 
 ==============================================================================
-OPTIONS                                                      *hydra-options*
+DEFAULTS                                                    *hydra-defaults*
 
                                                           *g:hydra_defaults*
 
@@ -136,6 +164,7 @@ g:hydra_defaults = {
             \ "foreign_key": v:true,
             \ 'feed_key':    v:false,
             \ "exit_key":    "q",
+            \ 'position':    's:lower_center',
             \ }
 <
 
@@ -143,11 +172,17 @@ g:hydra_defaults = {
 ==============================================================================
 API                                                              *hydra-api*
 
-Register hydra. Takes hydra dict as argument.             *hydra#hydras#register()*
-Returns a list of registered hydras.                          *hydra#hydras#list()*
-Opens an hydra by name.                                       *hydra#hydras#open()*
-Get an hydra object (dict) by name.                            *hydra#hydras#get()*
-
+Register hydra. Takes hydra dict as argument.      *hydra#hydras#register()*
+Returns a list of registered hydras.                   *hydra#hydras#list()*
+Opens an hydra by name.                                *hydra#hydras#open()*
+Get an hydra object (dict) by name.                     *hydra#hydras#get()*
+Get the name of the current active hydra.            *hydra#hydras#active()*
+Get the name of the last active hydra.                 *hydra#hydras#last()*
+Get the name of the last active hydra.                 *hydra#hydras#last()*
+Hydra object method to open it                               *Hydra.build()*
+Hydra object method to close it                               *Hydra.exit()*
+Return's hydra object's height                              *Hydra.height()*
+Return's hydra object's height                               *Hydra.width()*
 
 ==============================================================================
 ISSUES                                                        *hydra-issues*
