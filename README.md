@@ -74,4 +74,4 @@ The name and title fields are required.
 
 ### Hydra options
 
-Please take a look at the [help file][./doc/hydra.txt]
+Please take a look at the [help file](./doc/hydra.txt)
