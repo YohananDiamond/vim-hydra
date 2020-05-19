@@ -86,6 +86,10 @@ function! hydra#hydras#open(name, ...) abort
         return v:false
     endif
 endfunction
+ 
+function! hydra#hydras#reset() abort
+    let s:hydras.registered = {}
+endfunction
 
 "--------------------------------------------------------------
 " Hydra: configuration global values
@@ -93,6 +97,7 @@ endfunction
 
 let g:hydra_defaults = {
             \ 'show':        'popup',
+            \ 'exception':   v:true,
             \ 'foreign_key': v:true,
             \ 'feed_key':    v:false,
             \ 'exit_key':    "q",
@@ -110,6 +115,7 @@ let s:Hydra = {
             \ 'exit_key':    g:hydra_defaults.exit_key,
             \ 'foreign_key': g:hydra_defaults.foreign_key,
             \ 'feed_key':    g:hydra_defaults.feed_key,
+            \ 'exception':   g:hydra_defaults.exception,
             \ 'position':    g:hydra_defaults.position,
             \ 'keymap':      [],
             \ 'buffer':      v:false,
@@ -283,7 +289,7 @@ function s:make_window(hydra) abort
         throw "Invalid show method."
     endif
     setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile 
-    setlocal nospell nonu nornu nocul nowrap nolist 
+    setlocal nospell nonu nornu nocul nowrap nolist scrolloff=999
 endfunction
 
 "-------------------------------
@@ -318,7 +324,14 @@ function! s:loop(hydra) abort
                     call s:wrap_interactive()
                     return
                 else
-                    execute cmd
+                    if a:hydra.exception
+                       try
+                         execute cmd
+                       catch /.*/
+                       endtry 
+                    else
+                        execute cmd
+                    endif
                     call s:refresh_window(a:hydra)
                 endif
             else
@@ -398,6 +411,14 @@ function s:lower_center(height, width) abort
     let l:pos.col = float2nr((&columns - a:width) / 2)
     return pos
 endfunction
+ 
+function s:bottom_right(height, width) abort
+    let l:pos = {}
+    let l:pos.row = &lines - a:height
+    let l:pos.col = &columns - a:width
+    return pos
+endfunction
+
 
 "-------------------------------
 " Similar to js' reduce. Loop through list
