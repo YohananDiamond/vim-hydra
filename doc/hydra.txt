@@ -178,7 +178,6 @@ Opens an hydra by name.                                *hydra#hydras#open()*
 Get an hydra object (dict) by name.                     *hydra#hydras#get()*
 Get the name of the current active hydra.            *hydra#hydras#active()*
 Get the name of the last active hydra.                 *hydra#hydras#last()*
-Get the name of the last active hydra.                 *hydra#hydras#last()*
 Hydra object method to open it                               *Hydra.build()*
 Hydra object method to close it                               *Hydra.exit()*
 Return's hydra object's height                              *Hydra.height()*
