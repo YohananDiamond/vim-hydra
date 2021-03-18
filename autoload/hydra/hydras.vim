@@ -286,6 +286,9 @@ function s:make_window(hydra) abort
     elseif a:hydra.show == "split"
         exec 'noautocmd botright '. height . 'split ' . bufname(a:hydra.buffer)
     else 
+    elseif a:hydra.show == "none"
+
+    else
         throw "Invalid show method."
     endif
     setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile 
