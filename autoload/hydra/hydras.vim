@@ -285,7 +285,6 @@ function s:make_window(hydra) abort
         call nvim_open_win(a:hydra.buffer, v:true, opts)
     elseif a:hydra.show == "split"
         exec 'noautocmd botright '. height . 'split ' . bufname(a:hydra.buffer)
-    else 
     elseif a:hydra.show == "none"
 
     else
