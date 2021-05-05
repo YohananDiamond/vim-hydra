@@ -349,6 +349,7 @@ function! s:loop(hydra) abort
 
             if a:hydra.single_command
                 call a:hydra.exit()
+                return
             endif
         endwhile
     catch /.*/
