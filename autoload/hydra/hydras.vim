@@ -96,12 +96,13 @@ endfunction
 "--------------------------------------------------------------
 
 let g:hydra_defaults = {
-            \ 'show':        'popup',
-            \ 'exception':   v:true,
-            \ 'foreign_key': v:true,
-            \ 'feed_key':    v:false,
-            \ 'exit_key':    "q",
-            \ 'position':    's:lower_center',
+            \ 'show':           'popup',
+            \ 'exception':      v:true,
+            \ 'foreign_key':    v:true,
+            \ 'feed_key':       v:false,
+            \ 'single_command': v:false,
+            \ 'exit_key':       "q",
+            \ 'position':       's:lower_center',
             \ }
 
 "---------------------------------------------------------------------------------------------
@@ -109,18 +110,19 @@ let g:hydra_defaults = {
 "---------------------------------------------------------------------------------------------
 
 let s:Hydra = {
-            \ 'name':        '',
-            \ 'title':       '',
-            \ 'show':        g:hydra_defaults.show,
-            \ 'exit_key':    g:hydra_defaults.exit_key,
-            \ 'foreign_key': g:hydra_defaults.foreign_key,
-            \ 'feed_key':    g:hydra_defaults.feed_key,
-            \ 'exception':   g:hydra_defaults.exception,
-            \ 'position':    g:hydra_defaults.position,
-            \ 'keymap':      [],
-            \ 'buffer':      v:false,
-            \ 'focus':       v:false,
-            \ 'drawing':     [],
+            \ 'name':           '',
+            \ 'title':          '',
+            \ 'show':           g:hydra_defaults.show,
+            \ 'exit_key':       g:hydra_defaults.exit_key,
+            \ 'foreign_key':    g:hydra_defaults.foreign_key,
+            \ 'feed_key':       g:hydra_defaults.feed_key,
+            \ 'single_command': g:hydra_defaults.single_command,
+            \ 'exception':      g:hydra_defaults.exception,
+            \ 'position':       g:hydra_defaults.position,
+            \ 'keymap':         [],
+            \ 'buffer':         v:false,
+            \ 'focus':          v:false,
+            \ 'drawing':        [],
             \ }
 
 let s:Keymap = {
@@ -343,6 +345,11 @@ function! s:loop(hydra) abort
                 if a:hydra.feed_key
                     exec "norm " . key
                 endif
+            endif
+
+            if a:hydra.single_command
+                call a:hydra.exit()
+                return
             endif
         endwhile
     catch /.*/
