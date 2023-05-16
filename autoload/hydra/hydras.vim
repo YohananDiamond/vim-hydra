@@ -32,8 +32,7 @@ function! hydra#hydras#register(hydra) abort
         if has_key(s:hydras.registered, name)
             throw "hydra with name " . name . " already defined."
         endif
-        let s:hydras.registered[name] = s:new_hydra(a:hydra)  
-        echo "Hydra " a:hydra.name " registered successfully."
+        let s:hydras.registered[name] = s:new_hydra(a:hydra)
     catch /.*/
         echo "Unable to register hydra: " . v:exception
     endtry
