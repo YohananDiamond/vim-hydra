@@ -9,6 +9,7 @@ CONTENTS                                        *hydra*   *hydra-contents*
         show....................................: |hydra-show|
         foreign_key.............................: |hydra-foreign_key|
         exit_key................................: |hydra-exit_key|
+        feed_key................................: |hydra-feed_key|
         position................................: |hydra-position|
         keymap-hide.............................: |hydra-keymap-hide|
         keymap-exit.............................: |hydra-keymap-exit|
